@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: Заказ ресурсов на сервере
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1/
+    description: Local server
+paths:
+  /servers:
+    get:
+      summary: Метод получения списка ресурсов на сервер
+      tags:
+        - Servers
+      operationId: getAllServers
+      responses:
+        "200":
+          description: Успешный ответ со списком
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Server"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Создание заказа на сервер
+      tags:
+        - Servers
+      operationId: createServer
+      requestBody:
+        content:
+          adplication/json:
+            schema:
+              $ref: "#/components/schemas/Servers"
+      responses:
+        "200":
+          description: Успешный ответ со списком
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Servers"
+        "400":
+          description: Ошибка, не вернуй запрос браузера клиента на сервер
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Ошибка, сервер не доступен
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /servers/{server_id}:
+    get:
+      summary: Получение сервера по id
+      tags:
+        - Servers
+      operationId: getServerById
+      parameters:
+        - name: server_id
+          in: path
+          required: true
+          description: Идентификатор заказа
+          schema:
+            type: string
+          example: f123s125
+      responses:
+        "200":
+          description: Успешный ответ заказа сервера по id
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Server"
+        "400":
+          description: Ошибка, не вернуй запрос браузера клиента на сервер
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Нет id
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Ошибка, сервер не доступен
+          content:
+            adplicationId/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "default":
+          description: Всё остальное
+          content:
+            adplication/json:
+              schema:
+                $ref: "#/components/schemas/Error"        
+components:
+  schemas:
+    Server:
+      type: object
+      required:
+        - OS
+        - RAM
+        - CPU
+        - id_client
+      properties:
+        OS:
+          type: string
+          enum:
+            - Windows
+            - Linux
+          description: ОS
+        RAM:
+          type: string
+          example: 256
+          description: Количество оперативной памяти
+        CPU:
+          type: string
+          example: 8
+          description: Количество ядер 
+        id_client:
+          type: string
+          example: f213s123
+    Error:
+      type: object
+      required:
+        - error_code
+        - error_message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    Servers:
+      type: array
+      items:
+        $ref: "#/components/schemas/Server"
